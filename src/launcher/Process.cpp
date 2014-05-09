@@ -9,14 +9,14 @@ namespace launcher {
 		this->processInfo = pi;
 	}
 
-	Process::Process(const std::string &name) {
+	Process::Process(const std::wstring &name) {
 		PROCESS_INFORMATION pi = { 0 };
 		this->processInfo = pi;
 
 		this->open(name);
 	}
 
-	Process::Process(const std::string &name, const std::string &cmdLine) {
+	Process::Process(const std::wstring &name, const std::wstring &cmdLine) {
 		PROCESS_INFORMATION pi = { 0 };
 		this->processInfo = pi;
 
@@ -27,13 +27,13 @@ namespace launcher {
 		this->close();
 	}
 
-	void Process::open(const std::string &name) {
-		this->open(name, "");
+	void Process::open(const std::wstring &name) {
+		this->open(name, L"");
 	}
 
-	void Process::open(const std::string &name, const std::string &cmdLine) {
-		const char *lpAppName = nullptr;
-		char* lpCmdLine = nullptr;
+	void Process::open(const std::wstring &name, const std::wstring &cmdLine) {
+		const wchar_t *lpAppName = nullptr;
+		wchar_t* lpCmdLine = nullptr;
 
 		STARTUPINFO si = { 0 };
 		si.cb = sizeof(STARTUPINFO);
@@ -42,8 +42,8 @@ namespace launcher {
 		lpAppName = name.c_str();
 
 		// prepare command line
-		if (cmdLine != "") {
-			lpCmdLine = const_cast<char*>(cmdLine.c_str());
+		if (cmdLine != L"") {
+			lpCmdLine = const_cast<wchar_t*>(cmdLine.c_str());
 		} else {
 			lpCmdLine = nullptr;
 		}

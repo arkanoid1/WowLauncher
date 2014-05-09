@@ -1,15 +1,33 @@
 
-#include "Process.hpp"
+#include <vaca/Vaca.h>
 
-#include <Windows.h>
-int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
+using namespace Vaca;
 
-	using namespace launcher;
+class MainFrame : public Frame {
+public:
+	MainFrame() : Frame(L"WoW Launcher"), realmComboBox(this) {
+		setLayout(new BoxLayout(Orientation::Vertical, false));
 
-	Process process;
-	process.open("C:\\Windows\\notepad.exe");
-	process.start();
-	process.wait();
-	
+		realmComboBox.addItem(L"LALA");
+
+		setSize(getPreferredSize());
+		center();
+	}
+
+private:
+	ComboBox realmComboBox;
+};
+
+
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
+	using namespace Vaca;
+
+	Application app;
+
+	MainFrame mainFrame;
+	mainFrame.setVisible(true);
+
+	app.run();
+
 	return 0;
-}
+} 

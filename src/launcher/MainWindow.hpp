@@ -1,18 +1,22 @@
 
-#ifndef __launcher_mainwindow_hpp__
-#define __launcher_mainwindow_hpp__
+#ifndef __LAUNCHER_MAINWINDOW_HPP__
+#define __LAUNCHER_MAINWINDOW_HPP__
 
 #include <memory>
 #include <string>
 
-class MainWindow {
-public:
-	MainWindow();
-	virtual ~MainWindow();
+namespace launcher {
+	class MainWindow {
+	public:
+		MainWindow();
+		virtual ~MainWindow();
 
-private:
-	struct Impl;
-	std::unique_ptr<Impl> impl;
-};
+		void doEvents();
 
-#endif	// __launcher_mainwindow_hpp__
+	private:
+		struct Impl;
+		std::unique_ptr<Impl> impl;
+	};
+}
+
+#endif	// __LAUNCHER_MAINWINDOW_HPP__

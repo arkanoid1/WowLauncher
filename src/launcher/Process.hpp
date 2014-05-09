@@ -11,13 +11,13 @@ namespace launcher {
 	class Process {
 	public:
 		Process();
-		Process(const std::string &name);
-		Process(const std::string &name, const std::string &cmdLine);
+		Process(const std::wstring &name);
+		Process(const std::wstring &name, const std::wstring &cmdLine);
 
 		~Process();
 
-		void open(const std::string &name);
-		void open(const std::string &name, const std::string &cmdLine);
+		void open(const std::wstring &name);
+		void open(const std::wstring &name, const std::wstring &cmdLine);
 		void close();
 
 		void start();
