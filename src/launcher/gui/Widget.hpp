@@ -1,5 +1,8 @@
 
 #include <Windows.h>
+#include <functional>
+#include <map>
+#include <vector>
 
 namespace gui {
 
@@ -13,6 +16,10 @@ namespace gui {
 
 	class Widget {
 	public:
+		typedef std::function<void(Widget*)> Callback;
+		typedef std::vector<Callback>  CallbackVector;
+		typedef std::map<int, CallbackVector> EventCallbackMap;
+
 		Widget();
 		virtual ~Widget();
 
@@ -26,6 +33,17 @@ namespace gui {
 
 		void setClientBounds(const Rect &rect);
 		Rect getClientBounds() const;
+
+		void connect(int eventType, const Callback &callback);
+		void disconnect(int eventType, const Callback &callback);
+
+		CallbackVector& getEventCallbacks(int eventType);
+
+	protected:
+		void destroy();
+
+	private:
+		EventCallbackMap events;
 
 	protected:
 		HWND hWnd;

@@ -13,7 +13,7 @@ namespace gui {
 			wc.hCursor = ::LoadCursor(NULL, IDC_ARROW);
 			wc.hIcon = ::LoadIcon(NULL, IDI_WINLOGO);
 			wc.lpfnWndProc = DefWindowProc;
-			wc.hbrBackground = (HBRUSH)COLOR_3DFACE;
+			wc.hbrBackground = (HBRUSH)COLOR_WINDOW;
 			wc.hInstance = ::GetModuleHandle(NULL);
 			wc.lpszClassName = className.c_str();
 
@@ -21,11 +21,13 @@ namespace gui {
 		}
 
 		~WindowClass() {
-			::UnregisterClass(className.c_str(), ::GetModuleHandle(NULL));
+			const wchar_t *lpClassName = className.c_str();
+
+			::UnregisterClass(lpClassName, ::GetModuleHandle(NULL));
 		}
 
 	private:
-		const std::wstring &className;
+		std::wstring className;
 	};
 
 	class Frame : public WindowClass, public Widget {
@@ -50,16 +52,21 @@ namespace gui {
 
 		bool doEvents() {
 			MSG msg = { 0 };
-
-			// Procesa todos los mensajes pendientes
-			while (::PeekMessage(&msg, hWnd, 0, 0, PM_REMOVE)) {
+			
+			while (BOOL result = ::GetMessage(&msg, this->hWnd, 0, 0)) {
 				if (msg.message == WM_QUIT) {
-					::MessageBox(NULL, L"WM_QUIT", L"Mensaje", MB_OK | MB_ICONINFORMATION);
-					return false;
+					return 0;
 				} else {
-					::TranslateMessage(&msg);
-					::DispatchMessage(&msg);
-					return true;
+					if (result == 0) {
+						// app end?
+						return false;
+					} else if (result == -1) {
+						// exit?
+						return false;
+					} else {
+						::TranslateMessage(&msg);
+						::DispatchMessage(&msg);
+					}
 				}
 			}
 
@@ -69,22 +76,56 @@ namespace gui {
 	private:
 		static LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 			if (msg == WM_DESTROY) {
-				::MessageBox(NULL, L"WM_DESTROY", L"Mensaje", MB_OK | MB_ICONINFORMATION);
 				::PostMessage(hWnd, WM_QUIT, 0, 0);
-
 				return 0;
 			}
 
 			return ::DefWindowProc(hWnd, msg, wParam, lParam);
 		}
 	};
+
+	class Button : public Widget {
+	public:
+		Button(Widget *parent) {
+			this->create(parent, L"");
+		}
+
+		Button(Widget *parent, const std::wstring &title) {
+			this->create(parent, title.c_str());
+		}
+
+	protected:
+		void create(Widget *parent, const wchar_t *title) {
+			if (parent == nullptr) {
+				throw std::runtime_error("Button::Button: Parent can't be a null pointer.");
+			}
+
+			HWND parentHandle = parent->getHandle();
+			this->hWnd = ::CreateWindow(L"BUTTON", title, BS_PUSHBUTTON | WS_CHILD | WS_VISIBLE, 0, 0, 50, 50, parentHandle, NULL, ::GetModuleHandle(NULL), NULL);
+		}
+
+	private:
+
+	};
 }
 
+using namespace gui;
+
+class MainFrame : public Frame {
+public:
+	MainFrame(const std::wstring &title) : Frame(L"MainFrame", title) , okButton(this, L"Push Me!")  {
+		this->setBounds(Rect(0, 0, 300, 400));
+		this->setVisible(true);
+
+		okButton.setBounds(Rect(10, 10, 100, 35));
+	}
+
+private:
+	Button okButton;
+};
+
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
-	gui::Frame frame1(L"gui::Frame", L"Majong!!");
-
-	frame1.setVisible(true);
-
+	MainFrame frame1(L"Hola!");
 	while (frame1.doEvents()) {}
 
 	return 0;

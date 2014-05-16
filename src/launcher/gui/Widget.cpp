@@ -8,6 +8,10 @@ namespace gui {
 	}
 
 	Widget::~Widget() {
+		this->destroy();
+	}
+
+	void Widget::destroy() {
 		if (hWnd) {
 			::CloseWindow(hWnd);
 			this->hWnd = NULL;
@@ -59,6 +63,19 @@ namespace gui {
 			throw launcher::WindowsError(::GetLastError());
 		} else {
 			return Rect(rect.left, rect.top, rect.right, rect.bottom);
+		}
+	}
+
+	void Widget::connect(int eventType, const Callback &callback) {
+		events[eventType].push_back(callback);
+	}
+
+	void Widget::disconnect(int eventType, const Callback &callback) {
+		CallbackVector& callbacks = events[eventType];
+		auto position = std::find(callbacks.begin(), callbacks.end(), callback);
+
+		if (position != std::end(callbacks)) {
+			events[eventType].erase(position);
 		}
 	}
 }
