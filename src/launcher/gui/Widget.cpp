@@ -72,10 +72,33 @@ namespace gui {
 
 	void Widget::disconnect(int eventType, const Callback &callback) {
 		CallbackVector& callbacks = events[eventType];
+
+		/*
 		auto position = std::find(callbacks.begin(), callbacks.end(), callback);
 
 		if (position != std::end(callbacks)) {
 			events[eventType].erase(position);
 		}
+		*/
+	}
+
+	Widget* Widget::getParent() {
+		HWND hWndParent = ::GetParent(hWnd);
+
+		if (hWndParent == NULL) {
+			return nullptr;
+		}
+		
+		LONG lUserData = ::GetWindowLong(hWndParent, GWL_USERDATA);
+
+		if (lUserData == NULL) {
+			return nullptr;
+		} 
+
+		return reinterpret_cast<Widget*>(lUserData);
+	}
+
+	const Widget* Widget::getParent() const {
+		return const_cast<Widget*>(this)->getParent();
 	}
 }

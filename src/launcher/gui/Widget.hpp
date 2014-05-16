@@ -3,6 +3,7 @@
 #include <functional>
 #include <map>
 #include <vector>
+#include <list>
 
 namespace gui {
 
@@ -22,6 +23,9 @@ namespace gui {
 
 		Widget();
 		virtual ~Widget();
+
+		Widget* getParent();
+		const Widget* getParent() const;
 
 		void setVisible(bool visible);
 		bool getVisible() const;
