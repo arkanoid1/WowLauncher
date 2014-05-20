@@ -1,12 +1,15 @@
 
+#ifndef __GUI_WIDGET_HPP__
+#define __GUI_WIDGET_HPP__
+
 #include <Windows.h>
 #include <functional>
 #include <map>
 #include <vector>
 #include <list>
+#include <boost/signals2.hpp>
 
 namespace gui {
-
 	struct Rect {
 		int left, top;
 		int right, bottom;
@@ -15,12 +18,16 @@ namespace gui {
 		Rect(int left_, int top_, int right_, int bottom_) : left(left_), top(top_), right(right_), bottom(bottom_) {}
 	};
 
+	class Widget;
+
+	typedef std::function<void ()> Slot;
+	typedef boost::signals2::signal<void()> Signal;
+
 	class Widget {
 	public:
-		typedef std::function<void(Widget*)> Callback;
-		typedef std::vector<Callback>  CallbackVector;
-		typedef std::map<int, CallbackVector> EventCallbackMap;
+		Signal clickSignal;
 
+	public:
 		Widget();
 		virtual ~Widget();
 
@@ -38,18 +45,16 @@ namespace gui {
 		void setClientBounds(const Rect &rect);
 		Rect getClientBounds() const;
 
-		void connect(int eventType, const Callback &callback);
-		void disconnect(int eventType, const Callback &callback);
-
-		CallbackVector& getEventCallbacks(int eventType);
+		std::wstring getText() const;
+		void setText(const std::wstring &text);
 
 	protected:
 		void destroy();
-
-	private:
-		EventCallbackMap events;
+		void create(const wchar_t *lpClassName, const wchar_t *lpWindowName, DWORD dwStyle, int x, int y, int w, int h, HWND hWndParent, HMENU hMenu);
 
 	protected:
 		HWND hWnd;
 	};
 }
+
+#endif	//__GUI_WIDGET_HPP__

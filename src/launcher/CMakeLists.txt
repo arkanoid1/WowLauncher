@@ -2,6 +2,7 @@
 add_definitions(-DUNICODE -D_UNICODE)
 
 add_executable(Launcher WIN32 
+	Manifest.cpp
 	Main.hpp 			Main.cpp
 	MainWindow.hpp 		MainWindow.cpp
 	Process.hpp 		Process.cpp

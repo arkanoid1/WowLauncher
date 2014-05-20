@@ -66,21 +66,6 @@ namespace gui {
 		}
 	}
 
-	void Widget::connect(int eventType, const Callback &callback) {
-		events[eventType].push_back(callback);
-	}
-
-	void Widget::disconnect(int eventType, const Callback &callback) {
-		CallbackVector& callbacks = events[eventType];
-
-		/*
-		auto position = std::find(callbacks.begin(), callbacks.end(), callback);
-
-		if (position != std::end(callbacks)) {
-			events[eventType].erase(position);
-		}
-		*/
-	}
 
 	Widget* Widget::getParent() {
 		HWND hWndParent = ::GetParent(hWnd);
@@ -100,5 +85,37 @@ namespace gui {
 
 	const Widget* Widget::getParent() const {
 		return const_cast<Widget*>(this)->getParent();
+	}
+
+	std::wstring Widget::getText() const {
+		wchar_t buffer[2048] = {0};
+
+		if (::GetWindowText(hWnd, buffer, sizeof(buffer)) == 0) {
+			throw launcher::WindowsError(::GetLastError());
+		}
+
+		return buffer;
+	}
+
+	void Widget::setText(const std::wstring &text) {
+		if (::SetWindowText(hWnd, text.c_str()) == 0) {
+			throw launcher::WindowsError(::GetLastError());
+		}
+	}
+
+	void Widget::create(const wchar_t *lpClassName, const wchar_t *lpWindowName, DWORD dwStyle, int x, int y, int w, int h, HWND hWndParent, HMENU hMenu) {
+		hWnd = ::CreateWindow(lpClassName, lpWindowName, dwStyle, x, y, w, h, hWndParent, hMenu, ::GetModuleHandle(NULL), NULL);
+
+		if (hWnd == NULL) {
+			throw launcher::WindowsError(::GetLastError());
+		}
+
+		::SetWindowLong(hWnd, GWL_USERDATA, reinterpret_cast<LONG>(this));
+
+		NONCLIENTMETRICS ncm;
+		ncm.cbSize = sizeof(NONCLIENTMETRICS);
+		::SystemParametersInfo(SPI_GETNONCLIENTMETRICS, sizeof(NONCLIENTMETRICS), &ncm, 0);
+		HFONT hFont = ::CreateFontIndirect(&ncm.lfMessageFont);
+		::SendMessage(hWnd, WM_SETFONT, (WPARAM)hFont, MAKELPARAM(TRUE, 0));
 	}
 }
