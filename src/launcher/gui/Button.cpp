@@ -17,6 +17,6 @@ namespace gui {
 
 		HWND parentHandle = parent->getHandle();
 
-		Widget::create(L"BUTTON", title, BS_PUSHBUTTON | WS_CHILD | WS_VISIBLE, 0, 0, 50, 50, parentHandle, NULL);
+		Widget::create(NULL, L"BUTTON", title, BS_PUSHBUTTON | WS_CHILD | WS_VISIBLE, 0, 0, 50, 50, parentHandle, NULL);
 	}
 }

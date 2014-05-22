@@ -4,8 +4,7 @@
 
 namespace gui {
 
-	Widget::Widget() : hWnd(NULL) {
-	}
+	Widget::Widget() : hWnd(NULL) {}
 
 	Widget::~Widget() {
 		this->destroy();
@@ -13,7 +12,7 @@ namespace gui {
 
 	void Widget::destroy() {
 		if (hWnd) {
-			::CloseWindow(hWnd);
+			::DestroyWindow(hWnd);
 			this->hWnd = NULL;
 		}
 	}
@@ -34,7 +33,7 @@ namespace gui {
 		DWORD dwStyle = ::GetWindowLong(hWnd, GWL_STYLE);
 
 		if (::SetWindowPos(hWnd, NULL, rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top, SWP_FRAMECHANGED) == FALSE) {
-			throw launcher::WindowsError(::GetLastError());
+			throw WindowsError(::GetLastError());
 		}
 	}
 
@@ -42,7 +41,7 @@ namespace gui {
 		RECT rect = { 0 };
 
 		if (::GetWindowRect(hWnd, &rect) == FALSE) {
-			throw launcher::WindowsError(::GetLastError());
+			throw WindowsError(::GetLastError());
 		} else {
 			return Rect(rect.left, rect.top, rect.right, rect.bottom);
 		}
@@ -52,7 +51,7 @@ namespace gui {
 		DWORD dwStyle = ::GetWindowLong(hWnd, GWL_STYLE);
 		
 		if (::SetWindowPos(hWnd, NULL, rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top, SWP_FRAMECHANGED) == FALSE) {
-			throw launcher::WindowsError(::GetLastError());
+			throw WindowsError(::GetLastError());
 		}
 	}
 
@@ -60,7 +59,7 @@ namespace gui {
 		RECT rect = { 0 };
 
 		if (::GetClientRect(hWnd, &rect) == FALSE) {
-			throw launcher::WindowsError(::GetLastError());
+			throw WindowsError(::GetLastError());
 		} else {
 			return Rect(rect.left, rect.top, rect.right, rect.bottom);
 		}
@@ -91,7 +90,7 @@ namespace gui {
 		wchar_t buffer[2048] = {0};
 
 		if (::GetWindowText(hWnd, buffer, sizeof(buffer)) == 0) {
-			throw launcher::WindowsError(::GetLastError());
+			throw WindowsError(::GetLastError());
 		}
 
 		return buffer;
@@ -99,15 +98,15 @@ namespace gui {
 
 	void Widget::setText(const std::wstring &text) {
 		if (::SetWindowText(hWnd, text.c_str()) == 0) {
-			throw launcher::WindowsError(::GetLastError());
+			throw WindowsError(::GetLastError());
 		}
 	}
 
-	void Widget::create(const wchar_t *lpClassName, const wchar_t *lpWindowName, DWORD dwStyle, int x, int y, int w, int h, HWND hWndParent, HMENU hMenu) {
-		hWnd = ::CreateWindow(lpClassName, lpWindowName, dwStyle, x, y, w, h, hWndParent, hMenu, ::GetModuleHandle(NULL), NULL);
+	void Widget::create(DWORD dwExStyle, const wchar_t *lpClassName, const wchar_t *lpWindowName, DWORD dwStyle, int x, int y, int w, int h, HWND hWndParent, HMENU hMenu) {
+		hWnd = ::CreateWindowEx(dwExStyle, lpClassName, lpWindowName, dwStyle, x, y, w, h, hWndParent, hMenu, ::GetModuleHandle(NULL), NULL);
 
 		if (hWnd == NULL) {
-			throw launcher::WindowsError(::GetLastError());
+			throw WindowsError(::GetLastError());
 		}
 
 		::SetWindowLong(hWnd, GWL_USERDATA, reinterpret_cast<LONG>(this));
@@ -118,4 +117,26 @@ namespace gui {
 		HFONT hFont = ::CreateFontIndirect(&ncm.lfMessageFont);
 		::SendMessage(hWnd, WM_SETFONT, (WPARAM)hFont, MAKELPARAM(TRUE, 0));
 	}
+
+	void Widget::setEnable(bool enable) {
+		::EnableWindow(hWnd, enable ? TRUE : FALSE);
+	}
+
+	bool Widget::getEnable() const {
+		return ::IsWindowEnabled(hWnd) != 0;
+	}
+
+    bool Widget::hasFocus() const {
+        return ::GetFocus() == this->getHandle();
+    }
+
+    void Widget::setFocus() {
+        if (::SetFocus(this->hWnd) == NULL) {
+            throw WindowsError(::GetLastError());
+        }
+    }
+
+    void Widget::tryFocus() {
+        ::SetFocus(this->hWnd);
+    }
 }

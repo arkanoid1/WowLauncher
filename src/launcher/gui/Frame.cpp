@@ -21,7 +21,7 @@ namespace gui {
 	}
 
 	Frame::Frame(const std::wstring &className, const std::wstring &title) : WindowClass(className) {
-		Widget::create(
+		Widget::create(NULL,
 			className.c_str(), title.c_str(),
 			WS_OVERLAPPEDWINDOW,
 			CW_USEDEFAULT, CW_USEDEFAULT,
@@ -32,37 +32,11 @@ namespace gui {
 		::SetWindowLong(hWnd, GWLP_WNDPROC, reinterpret_cast<LONG>(WndProc));
 	}
 
-	bool Frame::doEvents() {
-		MSG msg = { 0 };
-
-		while (BOOL result = ::GetMessage(&msg, this->hWnd, 0, 0)) {
-			if (msg.message == WM_QUIT) {
-				return 0;
-			}
-			else {
-				if (result == 0) {
-					// app end?
-					return false;
-				}
-				else if (result == -1) {
-					// exit?
-					return false;
-				}
-				else {
-					::TranslateMessage(&msg);
-					::DispatchMessage(&msg);
-				}
-			}
-		}
-
-		return true;
-	}
-
 	LRESULT CALLBACK Frame::WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 		Widget* windowWidget = reinterpret_cast<Widget*>(::GetWindowLong(hWnd, GWL_USERDATA));
 
 		switch (msg) {
-		case WM_DESTROY:
+		case WM_CLOSE:
 			::PostMessage(hWnd, WM_QUIT, 0, 0);
 			return 0;
 
@@ -71,7 +45,7 @@ namespace gui {
 			Widget* childWidget = reinterpret_cast<Widget*>(::GetWindowLong(hWndChild, GWL_USERDATA));
 
 			if (childWidget) {
-				childWidget->clickSignal();
+				childWidget->commandSignal();
 				return 0;
 			}
 		}

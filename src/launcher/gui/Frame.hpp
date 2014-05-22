@@ -21,8 +21,7 @@ namespace gui {
 	class Frame : public WindowClass, public Widget {
 	public:
 		Frame(const std::wstring &className, const std::wstring &title);
-		bool doEvents();
-
+		
 	private:
 		static LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 	};
