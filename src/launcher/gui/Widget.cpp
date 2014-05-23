@@ -25,7 +25,7 @@ namespace gui {
 		return ::IsWindowVisible(hWnd)!=FALSE;
 	}
 
-	HWND Widget::getHandle() const {
+	Handle Widget::getHandle() const {
 		return hWnd;
 	}
 

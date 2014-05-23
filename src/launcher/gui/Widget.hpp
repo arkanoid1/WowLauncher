@@ -10,6 +10,7 @@
 #include <boost/signals2.hpp>
 
 namespace gui {
+	typedef HWND Handle;
 
     struct Position {
         int x, y;
@@ -76,7 +77,7 @@ namespace gui {
 		void setVisible(bool visible);
 		bool getVisible() const;
 
-		HWND getHandle() const;
+		Handle getHandle() const;
 
 		void setBounds(const Rect &rect);
 		Rect getBounds() const;

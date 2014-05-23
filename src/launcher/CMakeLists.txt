@@ -4,7 +4,7 @@ add_definitions(-DUNICODE -D_UNICODE)
 set (BASE_SOURCES 
 	Manifest.cpp
 	Main.hpp 			Main.cpp
-	MainWindow.hpp 		MainWindow.cpp
+	MainFrame.hpp 		MainFrame.cpp
 	Process.hpp 		Process.cpp
 	Realm.hpp 			Realm.cpp
 	RealmList.hpp 		RealmList.cpp
@@ -21,9 +21,15 @@ set (GUI_SOURCES
 	gui/TextBox.hpp 	gui/TextBox.cpp
 	gui/Button.hpp 		gui/Button.cpp
 	gui/Image.hpp 		gui/Image.cpp
+	gui/ListView.hpp 	gui/ListView.cpp
+	gui/MenuBar.hpp 	gui/MenuBar.cpp
+	gui/Menu.hpp 		gui/Menu.cpp
+	gui/MenuItem.hpp 	gui/MenuItem.cpp
 )
 
 source_group("\\" FILES ${BASE_SOURCES})
 source_group("\\gui" FILES ${GUI_SOURCES})
 
 add_executable(WowLauncher WIN32 ${BASE_SOURCES} ${GUI_SOURCES})
+
+target_link_libraries(WowLauncher comctl32)

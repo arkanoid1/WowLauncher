@@ -6,6 +6,8 @@
 
 class Application {
 public:
+	Application();
+
 	bool doEvents();
 	void run();
 };

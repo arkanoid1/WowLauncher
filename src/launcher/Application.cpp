@@ -1,6 +1,14 @@
 
 #include "Application.hpp"
 
+#include <CommCtrl.h>
+
+Application::Application() {
+	INITCOMMONCONTROLSEX icex;
+	icex.dwICC = ICC_LISTVIEW_CLASSES;
+	::InitCommonControlsEx(&icex);
+}
+
 bool Application::doEvents() {
 	MSG msg = { 0 };
 
