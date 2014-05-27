@@ -60,12 +60,22 @@ namespace gui {
 
 	class Widget;
 
-	typedef std::function<void ()> Slot;
 	typedef boost::signals2::signal<void()> Signal;
+    typedef boost::signals2::signal<void(const Size &size)> ResizeSignal;
+
+    /**
+     * @todo choose a better name
+     */
+//    struct WidgetSection {
+//        enum Enum {
+//            Client, Window
+//        };
+//    };
 
 	class Widget {
 	public:
 		Signal commandSignal;
+        ResizeSignal resizeSignal;
 
 	public:
 		Widget();
@@ -79,12 +89,17 @@ namespace gui {
 
 		Handle getHandle() const;
 
+//      void setPosition(const Position &position);
+//      Position getPosition() const;
+
+//      void setSize(const Size &position);
+//      Size getSize() const;
+
 		void setBounds(const Rect &rect);
 		Rect getBounds() const;
-
 		void setClientBounds(const Rect &rect);
 		Rect getClientBounds() const;
-
+        
 		std::wstring getText() const;
 		void setText(const std::wstring &text);
 

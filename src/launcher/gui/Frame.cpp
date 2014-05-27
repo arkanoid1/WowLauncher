@@ -40,6 +40,12 @@ namespace gui {
 			::PostMessage(hWnd, WM_QUIT, 0, 0);
 			return 0;
 
+        case WM_SIZE:
+            if (windowWidget) {
+                windowWidget->resizeSignal(Size( LOWORD(lParam), HIWORD(lParam) ));
+            }
+            return 0;
+
 		case WM_COMMAND:
 			HWND hWndChild = (HWND)lParam;
 			Widget* childWidget = reinterpret_cast<Widget*>(::GetWindowLong(hWndChild, GWL_USERDATA));
@@ -48,6 +54,7 @@ namespace gui {
 				childWidget->commandSignal();
 				return 0;
 			}
+            break;
 		}
 
 		return ::DefWindowProc(hWnd, msg, wParam, lParam);

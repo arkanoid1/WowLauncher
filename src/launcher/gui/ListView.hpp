@@ -37,8 +37,10 @@ namespace gui {
 		std::wstring getValue(const int rowIndex, const int columnIndex) const;
 
 		ListViewRow* getRow(int rowIndex);
-		ListViewRow* addRow();
 		ListViewRow* addRow(int rowIndex);
+
+        ListViewRow* addRow();
+        ListViewRow* addRow(const std::vector<std::wstring> &values);
 
 	private:
 		int columnCount;

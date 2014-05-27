@@ -19,10 +19,6 @@ public:
 	MainFrame(const std::wstring &title);
 
 private:
-	gui::Button button;
-	gui::ComboBox comboBox;
-	gui::TextBox textBox;
-	gui::Label label;
 	gui::ListView listView;
 };
 

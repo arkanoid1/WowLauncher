@@ -3,7 +3,6 @@
 #include "../WindowsError.hpp"
 
 namespace gui {
-
 	Widget::Widget() : hWnd(NULL) {}
 
 	Widget::~Widget() {
@@ -31,26 +30,67 @@ namespace gui {
 
 	void Widget::setBounds(const Rect &rect) {
 		DWORD dwStyle = ::GetWindowLong(hWnd, GWL_STYLE);
+        DWORD dwFlags = 0x00000000;
+        
+        if (this->getVisible()) {
+            dwFlags |= SWP_SHOWWINDOW;
+        } else {
+            dwFlags |= SWP_HIDEWINDOW;
+        }
 
-		if (::SetWindowPos(hWnd, NULL, rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top, SWP_FRAMECHANGED) == FALSE) {
+		if (::SetWindowPos(hWnd, NULL, rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top, dwFlags) == FALSE) {
 			throw WindowsError(::GetLastError());
 		}
 	}
 
 	Rect Widget::getBounds() const {
-		RECT rect = { 0 };
+		RECT rect = {0};
 
-		if (::GetWindowRect(hWnd, &rect) == FALSE) {
-			throw WindowsError(::GetLastError());
-		} else {
-			return Rect(rect.left, rect.top, rect.right, rect.bottom);
-		}
+        if (::GetWindowRect(hWnd, &rect) == FALSE) {
+            throw WindowsError(::GetLastError());
+        }
+
+        if (this->getParent() == nullptr) {
+            return Rect(rect.left, rect.top, rect.right, rect.bottom);
+        } else {
+            POINT pt = {0};
+            pt.x = rect.left;
+            pt.y = rect.top;
+
+            if (::ScreenToClient(this->getParent()->getHandle(), &pt) == FALSE) {
+                throw WindowsError(::GetLastError());
+            }
+
+            int width = rect.right - rect.left;
+            int height = rect.bottom - rect.top;
+
+            return Rect(pt.x, pt.y, pt.x + width, pt.y + height);
+        }
 	}
 
-	void Widget::setClientBounds(const Rect &rect) {
-		DWORD dwStyle = ::GetWindowLong(hWnd, GWL_STYLE);
-		
-		if (::SetWindowPos(hWnd, NULL, rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top, SWP_FRAMECHANGED) == FALSE) {
+	void Widget::setClientBounds(const Rect &rect_) {
+        DWORD dwFlags = SWP_FRAMECHANGED;
+        
+        if (this->getVisible()) {
+            dwFlags |= SWP_SHOWWINDOW;
+        } else {
+            dwFlags |= SWP_HIDEWINDOW;
+        }
+
+        DWORD dwStyle = ::GetWindowLong(hWnd, GWL_STYLE);
+        DWORD dwExStyle = ::GetWindowLong(hWnd, GWL_EXSTYLE);
+
+        RECT rect = {0};
+        rect.left = rect_.left;
+        rect.right = rect_.right;
+        rect.top = rect_.top;
+        rect.bottom = rect_.bottom;
+        ::AdjustWindowRectEx(&rect, dwStyle, FALSE, dwExStyle);
+
+        int x = rect.left, y = rect.top;
+        int w = rect.right - rect.left, h = rect.bottom - rect.top;
+
+		if (::SetWindowPos(hWnd, NULL, x, y, w, h, dwFlags) == FALSE) {
 			throw WindowsError(::GetLastError());
 		}
 	}
@@ -65,6 +105,45 @@ namespace gui {
 		}
 	}
 
+    /*
+    void Widget::setSize( const Size &size) {
+		if (! ::SetWindowPos(this->hWnd, HWND_NOTOPMOST, 0, 0, size.width, size.height, SWP_NOMOVE)) {
+			throw WindowsError( ::GetLastError() );
+		}
+	}
+
+	Size Widget::getSize() const {
+		RECT rect = {0};
+
+		if (! ::GetClientRect(this->hWnd, &rect)) {
+			throw WindowsError( ::GetLastError() );
+		}
+
+		return Size(rect.right-rect.left, rect.bottom-rect.top);
+	}
+
+
+	void Widget::setPosition( const Position &pos) {
+		if (this->getParent() == nullptr) {
+			if (! ::SetWindowPos(this->hWnd, HWND_NOTOPMOST, pos.x, pos.y, 0, 0, SWP_NOSIZE)) {
+				throw WindowsError( ::GetLastError() );
+			}
+		} else {
+
+		}
+	}
+
+
+	Position Widget::getPosition() const {
+		RECT rc = {0};
+
+		if (! ::GetClientRect(this->hWnd, &rc) ) {
+			throw WindowsError( ::GetLastError() );
+		}
+
+		return Position(rc.left, rc.top);
+	}
+    */
 
 	Widget* Widget::getParent() {
 		HWND hWndParent = ::GetParent(hWnd);

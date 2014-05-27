@@ -26,8 +26,12 @@ namespace gui {
 namespace gui {
 
 	ListView::ListView(Widget *parent, const std::vector<std::wstring> &columns) {
-		DWORD dwStyle = WS_CHILD | LVS_REPORT | LVS_EDITLABELS | WS_VISIBLE;
-		Widget::create(WS_EX_CLIENTEDGE, WC_LISTVIEW, L"", dwStyle, 0, 0, 50, 50, parent->getHandle(), NULL);
+        DWORD dwExStyle = WS_EX_CLIENTEDGE;
+		DWORD dwStyle = WS_CHILD | LVS_REPORT | LVS_EDITLABELS | WS_VISIBLE | LVS_SINGLESEL | LVS_SHOWSELALWAYS;
+        
+		Widget::create(dwExStyle, WC_LISTVIEW, L"", dwStyle, 0, 0, 50, 50, parent->getHandle(), NULL);
+
+        ListView_SetExtendedListViewStyleEx(hWnd, LVS_EX_FULLROWSELECT, LVS_EX_FULLROWSELECT);
 
 		// Agregar las columnas
 		LVCOLUMN lvc = { 0 };
@@ -89,4 +93,20 @@ namespace gui {
 	ListViewRow* ListView::addRow(int rowIndex) {
 		return nullptr;
 	}
+
+    ListViewRow* ListView::addRow(const std::vector<std::wstring> &values) {
+		LVITEM lvItem = {0};
+        
+		lvItem.mask = LVIF_TEXT;
+		lvItem.pszText = const_cast<LPWSTR>(values[0].c_str());
+		::SendMessage(hWnd, LVM_INSERTITEM, 0, (LPARAM)&lvItem);
+
+		for (int i = 1; i<this->columnCount; ++i) {
+			lvItem.pszText = const_cast<LPWSTR>(values[i].c_str());
+			lvItem.iSubItem = i;
+			::SendMessage(hWnd, LVM_SETITEM, 0, (LPARAM)&lvItem);
+		}
+
+		return nullptr;
+    }
 }
