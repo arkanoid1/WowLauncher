@@ -6,6 +6,13 @@
 #include "MainFrame.hpp"
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
+
+    MainFrame frame1(L"Hola!");
+	    Application app;
+
+	    app.run();
+
+        /*
     try {
 	    MainFrame frame1(L"Hola!");
 	    Application app;
@@ -19,6 +26,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		gui::MessageBox::show(msg, L"Message");
     }
+    */
 
     return 0;
 }

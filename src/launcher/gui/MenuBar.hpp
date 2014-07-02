@@ -3,27 +3,13 @@
 #define __GUI_MENUBAR_HPP__
 
 #include "Frame.hpp"
-#include "Menu.hpp"
+#include "MenuBase.hpp"
 
 namespace gui {
-	typedef HMENU MenuHandle;
-
-	class Menu;
-	class MenuBar {
+	class MenuBar : public MenuBase {
 	public:
-		MenuBar(Frame *parent);
+		MenuBar(Frame* parentFrame);
 		~MenuBar();
-
-		Frame* getParent();
-		const Frame* getParent() const;
-
-		MenuHandle getHandle() const;
-
-		Menu* addMenu(const std::wstring &text);
-
-	private:
-		Frame *parent;
-		HMENU hMenu;
 	};
 }
 

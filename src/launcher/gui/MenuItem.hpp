@@ -2,23 +2,24 @@
 #ifndef __GUI_MENUITEM_HPP__
 #define __GUI_MENUITEM_HPP__
 
-#include "Widget.hpp"
+#include "Menu.hpp"
 
 namespace gui {
-
-	class Menu;
-
 	class MenuItem {
-	public:
-		Signal commandSignal;
-
 	public:
 		MenuItem(Menu *parentMenu, const std::wstring &text);
 		~MenuItem();
 
+        const int getId() const;
+        Menu* getParentMenu() const;
+
+        void setText(const std::wstring &text);
+        std::wstring getText() const;
+
 	private:
 		Menu *parentMenu;
-		int menuId;
+		const int menuId;
+        std::wstring text;
 
 	private:
 		static int menuItemCount;

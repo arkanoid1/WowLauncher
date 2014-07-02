@@ -14,12 +14,21 @@
 #include "gui/MessageBox.hpp"
 #include "gui/ListView.hpp"
 
+#include "gui/MenuBar.hpp"
+#include "gui/Menu.hpp"
+#include "gui/MenuItem.hpp"
+
 class MainFrame : public gui::Frame {
 public:
 	MainFrame(const std::wstring &title);
 
 private:
 	gui::ListView listView;
+    gui::MenuBar menuBar;
+
+    gui::Menu fileMenu;
+    gui::MenuItem saveMenuItem;
+    gui::MenuItem exitMenuItem;
 };
 
 #endif	// __LAUNCHER_MAINWINDOW_HPP__

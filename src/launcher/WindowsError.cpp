@@ -27,9 +27,24 @@ static std::string ErrorCodeToString(DWORD error) {
 	return std::string();
 }
 
+WindowsError::WindowsError() : std::runtime_error("") {
+    this->initMsg("", ::GetLastError());
+}
 
 WindowsError::WindowsError(unsigned long errCode) : std::runtime_error(""), msg("") {
-	this->msg = ErrorCodeToString(errCode);
+    this->initMsg("", errCode);
+}
+
+WindowsError::WindowsError(const std::string &baseMsg) : std::runtime_error("") {
+    this->initMsg(baseMsg, ::GetLastError());
+}
+
+WindowsError::WindowsError(const std::string &baseMsg, unsigned long errCode) : std::runtime_error("") {
+    this->initMsg(baseMsg, errCode);
+}
+
+void WindowsError::initMsg(const std::string &baseMsg, unsigned long errCode) {
+    this->msg = baseMsg + ErrorCodeToString(errCode);
 }
 
 const char* WindowsError::what() const {

@@ -9,7 +9,8 @@ set (BASE_SOURCES
 	Realm.hpp 			Realm.cpp
 	RealmList.hpp 		RealmList.cpp
 	WindowsError.hpp 	WindowsError.cpp
-	Application.hpp 	Application.cpp)
+	Application.hpp 	Application.cpp
+)
 
 set (GUI_SOURCES
 	gui/MessageBox.hpp 	gui/MessageBox.cpp
@@ -22,7 +23,9 @@ set (GUI_SOURCES
 	gui/Button.hpp 		gui/Button.cpp
 	gui/Image.hpp 		gui/Image.cpp
 	gui/ListView.hpp 	gui/ListView.cpp
+	gui/MenuBase.hpp 	gui/MenuBase.cpp
 	gui/MenuBar.hpp 	gui/MenuBar.cpp
+	gui/MenuHandler.hpp gui/MenuHandler.cpp
 	gui/Menu.hpp 		gui/Menu.cpp
 	gui/MenuItem.hpp 	gui/MenuItem.cpp
 )
