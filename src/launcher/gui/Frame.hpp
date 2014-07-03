@@ -4,11 +4,12 @@
 
 #include <Windows.h>
 #include <string>
-
 #include "Widget.hpp"
+#include "MenuBar.hpp"
 
 namespace gui {
 
+    class MenuBar;
 	class WindowClass {
 	public:
 		WindowClass(const std::wstring &className_);
@@ -22,6 +23,13 @@ namespace gui {
 	public:
 		Frame(const std::wstring &className, const std::wstring &title);
 		
+        void setMenuBar(MenuBar &menuBar);
+        MenuBar& getMenuBar();
+        const MenuBar& getMenuBar() const;
+
+    private:
+        MenuBar menuBar;
+
 	private:
 		static LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 	};

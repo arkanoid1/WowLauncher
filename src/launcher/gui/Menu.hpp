@@ -1,4 +1,3 @@
-
 #ifndef __GUI_MENU_HPP__
 #define __GUI_MENU_HPP__
 
@@ -7,6 +6,7 @@
 #include <Windows.h>
 
 #include "MenuBase.hpp"
+#include <list>
 
 namespace gui {
 	class MenuItem;
@@ -14,15 +14,21 @@ namespace gui {
 
 	class Menu : public MenuBase {
 	public:
-		Menu(MenuBar *menuBar, const std::wstring &text);
+        Menu();
+		Menu(const MenuBar &menuBar, const std::wstring &text);
 		~Menu();
+
+        void addMenu(Menu &menu);
+        void addItem(MenuItem &menuItem);
+        void addSeparator();
 
 	public:
         std::wstring getText() const;
-        void setText(std::wstring &text);
+        void setText(const std::wstring &text);
 
 	private:
-		MenuBar *menuBar;
+        std::list<Menu> menus;
+        std::list<MenuItem> items;
 	};
 }
 

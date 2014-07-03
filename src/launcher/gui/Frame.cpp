@@ -1,6 +1,8 @@
 
 #include "Frame.hpp"
 
+#include "../WindowsError.hpp"
+
 namespace gui {
 	WindowClass::WindowClass(const std::wstring &className_) : className(className_) {
 		WNDCLASS wc = { 0 };
@@ -16,7 +18,6 @@ namespace gui {
 
 	WindowClass::~WindowClass() {
 		const wchar_t *lpClassName = className.c_str();
-
 		::UnregisterClass(lpClassName, ::GetModuleHandle(NULL));
 	}
 
@@ -31,6 +32,26 @@ namespace gui {
 
 		::SetWindowLong(hWnd, GWLP_WNDPROC, reinterpret_cast<LONG>(WndProc));
 	}
+
+    void Frame::setMenuBar(MenuBar &menuBar) {
+        HMENU hMenuBar = NULL;
+
+        hMenuBar = menuBar.getHandle();
+
+        if (!::SetMenu(this->hWnd, hMenuBar)) {
+            throw WindowsError();
+        }
+
+        this->menuBar = menuBar;
+    }
+
+    MenuBar& Frame::getMenuBar() {
+        return this->menuBar;
+    }
+
+    const MenuBar& Frame::getMenuBar() const {
+        return this->menuBar;
+    }
 
 	LRESULT CALLBACK Frame::WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 		Widget* windowWidget = reinterpret_cast<Widget*>(::GetWindowLong(hWnd, GWL_USERDATA));

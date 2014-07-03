@@ -8,7 +8,17 @@ std::ostream& operator<< (std::ostream &os, const Size &size) {
     return os;
 }
 
-MainFrame::MainFrame(const std::wstring &title) : Frame(L"MainFrame", title), listView(this, {L"Col 1", L"Col 2", L"Col 3"}), menuBar(this), fileMenu(&menuBar, L"File"), saveMenuItem(&fileMenu, L"Save"), exitMenuItem(&fileMenu, L"Exit") {
-	setBounds(gui::Rect(0, 0, 300, 400));
-	setVisible(true);
+MainFrame::MainFrame(const std::wstring &title) : Frame(L"MainFrame", title), listView(this, {L"Col 1", L"Col 2", L"Col 3"}) {
+
+    MenuBar menuBar;
+
+    Menu fileMenu(menuBar, L"&File");
+    MenuItem saveMenuItem(fileMenu, MenuItemType::Item, L"&Save");
+    MenuItem exitMenuItem(fileMenu, MenuItemType::Item, L"&Exit");
+
+
+
+    this->setBounds(gui::Rect(0, 0, 300, 400));
+	this->setVisible(true);
+    this->setMenuBar(menuBar);
 }

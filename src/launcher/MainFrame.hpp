@@ -24,11 +24,10 @@ public:
 
 private:
 	gui::ListView listView;
-    gui::MenuBar menuBar;
 
-    gui::Menu fileMenu;
-    gui::MenuItem saveMenuItem;
-    gui::MenuItem exitMenuItem;
+    Menu fileMenu;
+    MenuItem saveMenuItem;
+    MenuItem exitMenuItem;
 };
 
 #endif	// __LAUNCHER_MAINWINDOW_HPP__

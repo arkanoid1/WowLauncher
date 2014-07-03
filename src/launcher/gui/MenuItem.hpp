@@ -5,20 +5,32 @@
 #include "Menu.hpp"
 
 namespace gui {
+    struct MenuItemType {
+        enum Enum {
+            Item,
+            Separator
+        };
+    };
+
 	class MenuItem {
 	public:
-		MenuItem(Menu *parentMenu, const std::wstring &text);
+        MenuItem(const Menu &parentMenu, const MenuItemType::Enum menuItemType);
+		MenuItem(const Menu &parentMenu, const MenuItemType::Enum menuItemType, const std::wstring &text);
 		~MenuItem();
 
         const int getId() const;
-        Menu* getParentMenu() const;
+        const Menu& getParentMenu() const;
 
         void setText(const std::wstring &text);
         std::wstring getText() const;
 
+    private:
+        void init(const Menu &parentMenu, const MenuItemType::Enum menuItemType, const std::wstring &text);
+
 	private:
-		Menu *parentMenu;
+		const Menu &parentMenu;
 		const int menuId;
+        const MenuItemType::Enum type;
         std::wstring text;
 
 	private:

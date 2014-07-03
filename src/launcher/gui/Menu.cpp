@@ -6,14 +6,10 @@
 #include "../WindowsError.hpp"
 
 namespace gui {
-    Menu::Menu(MenuBar *menuBar, const std::wstring &text) : menuBar(NULL) {
-        if (menuBar == nullptr) {
-            throw std::runtime_error("Menu::Menu: Menubar pointer can't be null.");
-        }
-
+    Menu::Menu(const MenuBar &menuBar_, const std::wstring &text) : menuBar(menuBar_) {
         MenuHandler menuHandler;
 
-        if (::AppendMenu(menuBar->getHandle(), MF_POPUP | MF_ENABLED | MF_STRING, (UINT_PTR)menuHandler.hMenu, text.c_str()) == FALSE) {
+        if (::AppendMenu(menuBar.getHandle(), MF_POPUP | MF_ENABLED | MF_STRING, (UINT_PTR)menuHandler.hMenu, text.c_str()) == FALSE) {
             throw WindowsError(::GetLastError());
         }
 
